@@ -3,22 +3,17 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
+        <!-- <param name="plugin-icon">images/pluginIcon.png</param> -->
+        <!-- <param name="plugin-logo">images/pluginLogo.png</param> -->
     </plugin-info>
 
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="xmppmuc"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="xmppmuc-resources" name="xmppmuc Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="xmppmuc.css" location="/css/xmppmuc.css"/>
-        <resource type="download" name="xmppmuc.js" location="/js/xmppmuc.js"/>
-        <resource type="download" name="images/" location="/images"/>
 
-        <context>xmppmuc</context>
-    </web-resource>
+    <notificationRecipient key="recipient.xmppmuc" name="XMPP Muc Recipient" class="com.ipsoft.plugins.xmppmuc.XMPPMucNotificationRecipient" weight="10">
+        <description>XMPPMuc</description>
+        <resource type="freemarker" name="edit" location="XMPPMucEditNotification.ftl"/>
+        <resource type="freemarker" name="view" location="XMPPMucViewNotification.ftl"/>
+    </notificationRecipient>
     
 </atlassian-plugin>

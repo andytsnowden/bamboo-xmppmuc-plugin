@@ -1,0 +1,1 @@
+[@ww.textfield labelKey="xmppmuc.channel" name="channel" value="${channel!}" required='true'/]
