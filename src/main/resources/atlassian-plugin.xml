@@ -3,17 +3,17 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <!-- <param name="plugin-icon">images/pluginIcon.png</param> -->
-        <!-- <param name="plugin-logo">images/pluginLogo.png</param> -->
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
     </plugin-info>
 
     <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="xmppmuc"/>
+    <resource type="i18n" name="XMPP Multi-User Chat Language Pack" location="english"/>
 
-    <notificationRecipient key="recipient.xmppmuc" name="XMPP Muc Recipient" class="com.ipsoft.plugins.xmppmuc.XMPPMucNotificationRecipient" weight="10">
-        <description>XMPPMuc</description>
-        <resource type="freemarker" name="edit" location="XMPPMucEditNotification.ftl"/>
-        <resource type="freemarker" name="view" location="XMPPMucViewNotification.ftl"/>
+    <notificationRecipient key="recipient.xmppmuc" name="XMPP Multi-User Chat Recipient" class="com.ipsoft.plugins.bamboo.xmppmuc.XMPPMucNotificationRecipient" weight="10">
+        <description>XMPP Multi-User Chat</description>
+        <resource type="freemarker" name="edit" location="xmppMucEditNotification.ftl"/>
+        <resource type="freemarker" name="view" location="xmppMucViewNotification.ftl"/>
     </notificationRecipient>
     
 </atlassian-plugin>

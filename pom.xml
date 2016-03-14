@@ -5,7 +5,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.ipsoft.plugins</groupId>
+    <groupId>com.ipsoft.plugins.bamboo</groupId>
     <artifactId>xmppmuc</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -15,7 +15,7 @@
     </organization>
 
     <name>xmppmuc</name>
-    <description>This is the com.ipsoft.plugins:xmppmuc plugin for Atlassian Bamboo.</description>
+    <description>This is the com.ipsoft.plugins.bamboo:xmppmuc plugin for Atlassian Bamboo.</description>
     <packaging>atlassian-plugin</packaging>
 
     <properties>
@@ -41,6 +41,18 @@
             <artifactId>atlassian-spring-scanner-annotation</artifactId>
             <version>${atlassian.spring.scanner.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jivesoftware</groupId>
+            <artifactId>smack</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jivesoftware</groupId>
+            <artifactId>smackx</artifactId>
+            <version>3.1.0</version>
         </dependency>
 
         <dependency>

@@ -357,6 +357,8 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: xerces:xercesImpl:2.11.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="library" name="Maven: com.atlassian.plugin:atlassian-spring-scanner-annotation:1.2.6" level="project" />
+    <orderEntry type="library" name="Maven: jivesoftware:smack:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: jivesoftware:smackx:3.1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.atlassian.plugin:atlassian-spring-scanner-runtime:1.2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
