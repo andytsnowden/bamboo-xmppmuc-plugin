@@ -109,6 +109,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                 } catch (XMPPException e) {
                     log.info("Unable to get XMPP MUC Connection");
                     log.trace(e.getStackTrace());
+                    return;
                 }
             }
 
@@ -127,6 +128,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                 List<String> services = mucm.getServiceNames();
                 if (services == null || services.isEmpty()) {
                     log.info("XMPP MUC no services found, unable to connect to MUC room");
+                    return;
                 } else {
                     MultiUserChat muc = mucm.getMultiUserChat(room);
                     this.muc = muc;
@@ -141,9 +143,11 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                     } catch (XMPPException e){
                         log.info("XMPP MUC Exemption while trying to join room.");
                         log.trace(e.getStackTrace());
+                        return;
                     } catch (SmackException e) {
                         log.info("XMPP MUC SmackException while trying to join room.");
                         log.trace(e.getStackTrace());
+                        return;
                     }
                     //Send the message
                     this.muc.sendMessage(message);
@@ -153,12 +157,15 @@ public class XMPPMucNotificationTransport implements NotificationTransport
             } catch (SmackException.NoResponseException e){
                 log.info("XMPP MUC no response to query for service names");
                 log.trace(e.getStackTrace());
+                return;
             } catch (XMPPException.XMPPErrorException e){
                 log.info("XMPP MUC unknown exception");
                 log.trace(e.getStackTrace());
+                return;
             } catch (SmackException.NotConnectedException e){
                 log.info("XMPP MUC not connected to query for service names");
                 log.trace(e.getStackTrace());
+                return;
             }
         }
 
