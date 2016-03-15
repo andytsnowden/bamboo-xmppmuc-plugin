@@ -11,6 +11,8 @@ import com.atlassian.bamboo.plan.cache.ImmutablePlan;
 import com.atlassian.bamboo.plugin.descriptor.NotificationRecipientModuleDescriptor;
 import com.atlassian.bamboo.resultsummary.ResultsSummary;
 import com.atlassian.bamboo.template.TemplateRenderer;
+import com.atlassian.bamboo.utils.error.ErrorCollection;
+import com.atlassian.bamboo.utils.error.SimpleErrorCollection;
 import com.atlassian.bamboo.variable.CustomVariableContext;
 
 import org.jdom.Document;
@@ -155,8 +157,29 @@ public class XMPPMucNotificationRecipient extends AbstractNotificationRecipient 
     @NotNull
     public List<NotificationTransport> getTransports() {
         List<NotificationTransport> list = Lists.newArrayList();
-        list.add(new XMPPMucNotificationTransport(room, roompw, plan, resultsSummary, deploymentResult, customVariableContext));
+        list.add(new XMPPMucNotificationTransport(room, roompw, nickname, plan, resultsSummary, deploymentResult, customVariableContext));
         return list;
+    }
+
+    @Override
+    public ErrorCollection validate(@NotNull Map<String, String[]> params) {
+        ErrorCollection errorCollection = new SimpleErrorCollection();
+
+        //MUC_ROOM is the only required field
+        String[] roomArray = (String[]) params.get(MUC_ROOM);
+        if ((roomArray == null) || (roomArray.length == 0)) {
+            errorCollection.addError(MUC_ROOM, "You must enter a MUC room JID");
+            return errorCollection;
+        }
+
+        //Valid MUC_ROOM JID Format
+        this.room = getParam(MUC_ROOM, params);
+        if (!this.room.matches(".*@.*")){
+            errorCollection.addError(MUC_ROOM, "Invalid format, should be roomname@conferance-server-url");
+            return errorCollection;
+        }
+
+        return errorCollection;
     }
 
     public void setDeploymentResult(DeploymentResult deploymentResult) {

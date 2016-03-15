@@ -38,13 +38,15 @@ public class XMPPMucNotificationTransport implements NotificationTransport
 
     private static final Integer DEFAULT_TLS_PORT = 5222;
     private static final Integer DEFAULT_SSL_PORT = 5223;
-    private static final String DEFAULT_RESOURCE = "Bamboo";
+    private static final String DEFAULT_CHANNEL_USERNAME = "Bamboo Agent";
     private InstantMessagingServerManager instantMessagingServerManager;
     private XMPPTCPConnection connection;
     private XMPPMucConferenceInstantMessagingServerDefinition imserver;
 
     private final String room;
     private final String roompw;
+    private final String nickname;
+    private String CHANNEL_USERNAME;
     private MultiUserChat muc;
 
     @Nullable
@@ -67,6 +69,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
      */
     public XMPPMucNotificationTransport(String room,
                                         String roompw,
+                                        String nickname,
                                       @Nullable ImmutablePlan plan,
                                       @Nullable ResultsSummary resultsSummary,
                                       @Nullable DeploymentResult deploymentResult,
@@ -74,6 +77,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
     {
         this.room = customVariableContext.substituteString(room);
         this.roompw = customVariableContext.substituteString(roompw);
+        this.nickname = customVariableContext.substituteString(nickname);
         this.plan = plan;
         this.resultsSummary = resultsSummary;
         this.deploymentResult = deploymentResult;
@@ -108,9 +112,14 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                 }
             }
 
-            //Define username and add unique var to prevent duplicate jids
+
+            //Create 4 character unique key
             String code = RandomStringUtils.randomAlphanumeric(4).toUpperCase();
-            String DEFAULT_CHANNEL_USERNAME = "Bamboo Test Agent " + code;
+            if (this.nickname != null && !this.nickname.isEmpty()){
+                CHANNEL_USERNAME = this.nickname + " " + code;
+            } else {
+                CHANNEL_USERNAME = DEFAULT_CHANNEL_USERNAME + " " + code;
+            }
 
             //Define MUC and attempt to join/send message
             MultiUserChatManager mucm = MultiUserChatManager.getInstanceFor(this.connection);
@@ -125,9 +134,9 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                     //Join with password if defined
                     try {
                         if (roompw != null && !roompw.isEmpty()) {
-                            this.muc.join(DEFAULT_CHANNEL_USERNAME, this.roompw);
+                            this.muc.join(CHANNEL_USERNAME, this.roompw);
                         } else {
-                            this.muc.join(DEFAULT_CHANNEL_USERNAME);
+                            this.muc.join(CHANNEL_USERNAME);
                         }
                     } catch (XMPPException e){
                         log.info("XMPP MUC Exemption while trying to join room.");
