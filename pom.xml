@@ -10,7 +10,7 @@
         <url>http://www.ipsoft.com/</url>
     </organization>
     <name>XMPP MUC Notifications</name>
-    <description>This is a XMPP(Jabber) Notification Plugin for sending notifications to XEP-0045: Multi-User Chat.</description>
+    <description>This is a XMPP(smack|smackx) Notification Plugin for sending notifications to XEP-0045: Multi-User Chat.</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
         <bamboo.version>5.10.1</bamboo.version>
@@ -48,6 +48,11 @@
             <groupId>org.igniterealtime.smack</groupId>
             <artifactId>smack-java7</artifactId>
             <version>4.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.plugin</groupId>
