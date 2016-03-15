@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ipsoft.plugins.bamboo</groupId>
     <artifactId>xmppmuc</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <organization>
         <name>IPsoft Inc.</name>
         <url>http://www.ipsoft.com/</url>
     </organization>
-    <name>xmppmuc</name>
-    <description>This is the com.ipsoft.plugins.bamboo:xmppmuc plugin for Atlassian Bamboo.</description>
+    <name>XMPP MUC Notifications</name>
+    <description>This is a XMPP(Jabber) Notification Plugin for sending notifications to XEP-0045: Multi-User Chat.</description>
     <packaging>atlassian-plugin</packaging>
     <properties>
         <bamboo.version>5.10.1</bamboo.version>
@@ -90,7 +90,6 @@
                 <configuration>
                     <productVersion>${bamboo.version}</productVersion>
                     <productDataVersion>${bamboo.data.version}</productDataVersion>
-                    <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=256m</argLine>
                 </configuration>
             </plugin>
         </plugins>

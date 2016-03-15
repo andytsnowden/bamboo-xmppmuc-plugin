@@ -82,20 +82,21 @@ public class XMPPMucNotificationTransport implements NotificationTransport
     /**
      *
      * @param notification
-     * Takes the notification from Bamboo and attempts to send it via XMPP MUC
-     * Will attempt to use existing XMPPConnection if they exist else will create a new one with a call to this.getConnection
-     * After getting connection it will join the MUC room and send the message
+     * First makes sure server aka IM is configured, else drops error message
+     * Next will attempt to reuse existing connection if defined, else calls for creation of a new one via getConnection()
+     * Last joins and sends the notification to the MUC chat
      */
     public void sendNotification(@NotNull Notification notification)
     {
         String message = notification.getIMContent();
         XMPPMucConferenceInstantMessagingServerDefinition server = this.getMessagingServerDefinition();
 
-        
+        //Do they have their IM server configured?
         if (server == null) {
             log.error("IM Server is not configured");
         } else {            
 
+            //Reuse existing connections
             if (this.connection != null && this.connection.isConnected()){
                 log.info("Using existing connection");
             } else {
@@ -103,7 +104,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                     this.connection = this.getConnection(server);
                 } catch (XMPPException e) {
                     log.info("Unable to get XMPP MUC Connection");
-                    log.info(e.getStackTrace());
+                    log.trace(e.getStackTrace());
                 }
             }
 
@@ -111,6 +112,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
             String code = RandomStringUtils.randomAlphanumeric(4).toUpperCase();
             String DEFAULT_CHANNEL_USERNAME = "Bamboo Test Agent " + code;
 
+            //Define MUC and attempt to join/send message
             MultiUserChatManager mucm = MultiUserChatManager.getInstanceFor(this.connection);
             try {
                 List<String> services = mucm.getServiceNames();
@@ -120,6 +122,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                     MultiUserChat muc = mucm.getMultiUserChat(room);
                     this.muc = muc;
 
+                    //Join with password if defined
                     try {
                         if (roompw != null && !roompw.isEmpty()) {
                             this.muc.join(DEFAULT_CHANNEL_USERNAME, this.roompw);
@@ -128,13 +131,14 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                         }
                     } catch (XMPPException e){
                         log.info("XMPP MUC Exemption while trying to join room.");
-                        log.info(e.getStackTrace());
+                        log.trace(e.getStackTrace());
                     } catch (SmackException e) {
                         log.info("XMPP MUC SmackException while trying to join room.");
-                        log.info(e.getStackTrace());
+                        log.trace(e.getStackTrace());
                     }
+                    //Send the message
                     this.muc.sendMessage(message);
-                    // Leave the channel when done
+                    //Leave the channel when done
                     this.muc.leave();
                 }
             } catch (SmackException.NoResponseException e){
@@ -166,9 +170,10 @@ public class XMPPMucNotificationTransport implements NotificationTransport
     /**
      *
      * @param server
-     * @return XMPPConnection Object
+     * @return XMPTCPConnection
      * @throws XMPPException
-     * Attempts to return a valid XMPPConnection Object, will create a new connection if one does not already exist.
+     * Attempts to find and return existing connections, failing that it will create a new connection object.
+     * Handles TLS/SSL and Normal connections.
      */
     private XMPPTCPConnection getConnection(XMPPMucConferenceInstantMessagingServerDefinition server) throws XMPPException {
 
@@ -179,11 +184,11 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                 return this.connection;
             }
         } else {
-            log.info("Connection is null");
+            log.error("Connection is null");
         }
         log.info("Creating new XMPP Connection");
 
-        //Pull vars from XMPPMucConferanceIMSDef
+        //Pull vars from XMPPMucConferenceInstantMessagingServerDefinition
         String host = server.getHost();
         String serviceName = "talk.google.com".equals(host) ? "gmail.com" : host;
         Integer port = server.getPort();
@@ -231,11 +236,11 @@ public class XMPPMucNotificationTransport implements NotificationTransport
         try {
             this.connection.connect();
         } catch (SmackException e) {
-            log.info("XMPP MUC Connection Error");
-            log.info(e.getStackTrace());
+            log.info("XMPP MUC Connection Error, enable trace to see full error.");
+            log.trace(e.getStackTrace());
         } catch (IOException e) {
-            log.info("XMPP MUC Connection Error");
-            log.info(e.getStackTrace());
+            log.info("XMPP MUC Connection Error, enable trace to see full error.");
+            log.trace(e.getStackTrace());
         }
 
         //login
@@ -243,10 +248,10 @@ public class XMPPMucNotificationTransport implements NotificationTransport
             this.connection.login();
         } catch (SmackException e) {
             log.info("XMPP MUC Authentication Error");
-            log.info(e.getStackTrace());
+            log.trace(e.getStackTrace());
         } catch (IOException e) {
             log.info("XMPP MUC Connection Error");
-            log.info(e.getStackTrace());
+            log.trace(e.getStackTrace());
         }
 
         return this.connection;
