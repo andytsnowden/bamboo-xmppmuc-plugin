@@ -1,0 +1,13 @@
+<atlassian-plugin-marketing>
+    <compatibility>
+        <product name="bamboo" min="5.10" max="5.10.2"/>
+    </compatibility>
+
+    <logo image="images/pluginLogo.png"/>
+
+    <highlights>
+        <highlight image="images/highlight1_ss.png" cropped="images/highlight1_cropped.png"/>
+        <highlight image="images/highlight2_ss.png" cropped="images/highlight2_cropped.png"/>
+        <highlight image="images/highlight3_ss.png" cropped="images/highlight3_cropped.png"/>
+    </highlights>
+</atlassian-plugin-marketing>
