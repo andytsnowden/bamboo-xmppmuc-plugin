@@ -14,8 +14,8 @@
 
     <notificationRecipient key="recipient.xmppmuc" name="XMPP Multi-User Chat Recipient" class="com.ipsoft.plugins.bamboo.xmppmuc.XMPPMucNotificationRecipient" weight="10">
         <description>XMPP Multi-User Chat</description>
-        <resource type="freemarker" name="edit" location="xmppMucEditNotification.ftl"/>
-        <resource type="freemarker" name="view" location="xmppMucViewNotification.ftl"/>
+        <resource type="freemarker" name="edit" location="XMPPMucEditNotification.ftl"/>
+        <resource type="freemarker" name="view" location="XMPPMucViewNotification.ftl"/>
     </notificationRecipient>
     
 </atlassian-plugin>

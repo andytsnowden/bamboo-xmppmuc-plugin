@@ -10,7 +10,9 @@ import com.atlassian.bamboo.resultsummary.ResultsSummary;
 import com.atlassian.bamboo.variable.CustomVariableContext;
 import com.atlassian.spring.container.ContainerManager;
 import org.apache.commons.lang.RandomStringUtils;
+
 import org.apache.log4j.Logger;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +40,6 @@ public class XMPPMucNotificationTransport implements NotificationTransport
 
     private static final Integer DEFAULT_TLS_PORT = 5222;
     private static final Integer DEFAULT_SSL_PORT = 5223;
-    private static final String DEFAULT_RESOURCE = "Bamboo";
     private InstantMessagingServerManager instantMessagingServerManager;
     private XMPPTCPConnection connection;
 
