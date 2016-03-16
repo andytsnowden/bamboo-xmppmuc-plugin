@@ -38,7 +38,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
 
     private static final Integer DEFAULT_TLS_PORT = 5222;
     private static final Integer DEFAULT_SSL_PORT = 5223;
-    private static final String DEFAULT_CHANNEL_USERNAME = "Bamboo Agent";
+    private static final String DEFAULT_RESOURCE = "Bamboo";
     private InstantMessagingServerManager instantMessagingServerManager;
     private XMPPTCPConnection connection;
 
@@ -68,10 +68,10 @@ public class XMPPMucNotificationTransport implements NotificationTransport
     public XMPPMucNotificationTransport(String room,
                                         String roompw,
                                         String nickname,
-                                      @Nullable ImmutablePlan plan,
-                                      @Nullable ResultsSummary resultsSummary,
-                                      @Nullable DeploymentResult deploymentResult,
-                                      CustomVariableContext customVariableContext)
+                                        @Nullable ImmutablePlan plan,
+                                        @Nullable ResultsSummary resultsSummary,
+                                        @Nullable DeploymentResult deploymentResult,
+                                        CustomVariableContext customVariableContext)
     {
         this.room = customVariableContext.substituteString(room);
         this.roompw = customVariableContext.substituteString(roompw);
@@ -97,7 +97,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
         if (server == null) {
             log.error("IM Server is not configured");
             return;
-        } else {            
+        } else {
 
             //Reuse existing connections
             if (this.connection != null && this.connection.isConnected()){
@@ -136,9 +136,9 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                     //Join with password if defined
                     try {
                         if (roompw != null && !roompw.isEmpty()) {
-                            this.muc.join(CHANNEL_USERNAME, this.roompw);
+                            this.muc.join(DEFAULT_CHANNEL_USERNAME, this.roompw);
                         } else {
-                            this.muc.join(CHANNEL_USERNAME);
+                            this.muc.join(DEFAULT_CHANNEL_USERNAME);
                         }
                     } catch (XMPPException e){
                         log.info("XMPP MUC Exemption while trying to join room.");
