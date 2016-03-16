@@ -41,12 +41,10 @@ public class XMPPMucNotificationTransport implements NotificationTransport
     private static final String DEFAULT_CHANNEL_USERNAME = "Bamboo Agent";
     private InstantMessagingServerManager instantMessagingServerManager;
     private XMPPTCPConnection connection;
-    private XMPPMucConferenceInstantMessagingServerDefinition imserver;
 
     private final String room;
     private final String roompw;
     private final String nickname;
-    private String CHANNEL_USERNAME;
     private MultiUserChat muc;
 
     @Nullable
@@ -98,6 +96,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
         //Do they have their IM server configured?
         if (server == null) {
             log.error("IM Server is not configured");
+            return;
         } else {            
 
             //Reuse existing connections
@@ -113,13 +112,13 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                 }
             }
 
-
             //Create 4 character unique key
             String code = RandomStringUtils.randomAlphanumeric(4).toUpperCase();
-            if (this.nickname != null && !this.nickname.isEmpty()){
-                CHANNEL_USERNAME = this.nickname + " " + code;
+            String DEFAULT_CHANNEL_USERNAME = "Bamboo Test Agent";
+            if (nickname != null && !nickname.isEmpty()){
+                DEFAULT_CHANNEL_USERNAME = nickname + " " + code;
             } else {
-                CHANNEL_USERNAME = DEFAULT_CHANNEL_USERNAME + " " + code;
+                DEFAULT_CHANNEL_USERNAME = DEFAULT_CHANNEL_USERNAME + " " + code;
             }
 
             //Define MUC and attempt to join/send message
@@ -128,6 +127,7 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                 List<String> services = mucm.getServiceNames();
                 if (services == null || services.isEmpty()) {
                     log.info("XMPP MUC no services found, unable to connect to MUC room");
+                    this.connection.disconnect();
                     return;
                 } else {
                     MultiUserChat muc = mucm.getMultiUserChat(room);
@@ -142,10 +142,12 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                         }
                     } catch (XMPPException e){
                         log.info("XMPP MUC Exemption while trying to join room.");
+                        this.connection.disconnect();
                         log.trace(e.getStackTrace());
                         return;
                     } catch (SmackException e) {
                         log.info("XMPP MUC SmackException while trying to join room.");
+                        this.connection.disconnect();
                         log.trace(e.getStackTrace());
                         return;
                     }
@@ -153,22 +155,28 @@ public class XMPPMucNotificationTransport implements NotificationTransport
                     this.muc.sendMessage(message);
                     //Leave the channel when done
                     this.muc.leave();
+                    this.connection.disconnect();
+                    if (!this.connection.isConnected()){
+                        log.info("XMPP MUC Successfully disconnected");
+                    }
                 }
             } catch (SmackException.NoResponseException e){
                 log.info("XMPP MUC no response to query for service names");
+                this.connection.disconnect();
                 log.trace(e.getStackTrace());
                 return;
             } catch (XMPPException.XMPPErrorException e){
                 log.info("XMPP MUC unknown exception");
+                this.connection.disconnect();
                 log.trace(e.getStackTrace());
                 return;
             } catch (SmackException.NotConnectedException e){
                 log.info("XMPP MUC not connected to query for service names");
+                this.connection.disconnect();
                 log.trace(e.getStackTrace());
                 return;
             }
         }
-
     }
 
     public XMPPMucConferenceInstantMessagingServerDefinition getMessagingServerDefinition() {
@@ -221,7 +229,13 @@ public class XMPPMucNotificationTransport implements NotificationTransport
         conf.setCompressionEnabled(true);
         conf.setConnectTimeout(60);
 
-        //Accept all certs regardless
+        //Disables Presence so we don't get blasted with XMPPExceptions
+        conf.setSendPresence(false);
+
+        /**
+         * This will attempt to accept all certs
+         * This will however not prevent jdk.security from blocking md5 and keys below <1024bits.
+         */
         try {
             TLSUtils.acceptAllCertificates(conf);
         } catch (NoSuchAlgorithmException e){

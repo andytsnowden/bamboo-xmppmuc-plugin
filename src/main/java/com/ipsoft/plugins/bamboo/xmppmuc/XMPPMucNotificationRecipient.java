@@ -35,8 +35,8 @@ import java.util.Map;
 
 
 public class XMPPMucNotificationRecipient extends AbstractNotificationRecipient implements DeploymentResultAwareNotificationRecipient,
-                                                                                            NotificationRecipient.RequiresPlan,
-                                                                                            NotificationRecipient.RequiresResultSummary {
+        NotificationRecipient.RequiresPlan,
+        NotificationRecipient.RequiresResultSummary {
 
     private static String MUC_ROOM = "room";
     private static String MUC_ROOMPW = "roompw";
